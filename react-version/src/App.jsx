@@ -2,6 +2,7 @@ import { Content, Grid, Column, Tabs, TabList, Tab, TabPanels, TabPanel } from '
 import FormDemo from './FormDemo';
 import ChatbotDemo from './ChatbotDemo';
 import DashboardDemo from './DashboardDemo';
+import HealthcareDemo from './HealthcareDemo';
 import './App.scss';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
               <Tab>Form fields</Tab>
               <Tab>Chatbot</Tab>
               <Tab>Dashboard</Tab>
+              <Tab>Healthcare</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
@@ -29,6 +31,9 @@ function App() {
               </TabPanel>
               <TabPanel>
                 <DashboardDemo />
+              </TabPanel>
+              <TabPanel>
+                <HealthcareDemo />
               </TabPanel>
             </TabPanels>
           </Tabs>
