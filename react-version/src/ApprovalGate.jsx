@@ -60,7 +60,10 @@ function ApprovalGate({
           onChange={handleApproverChange}
           disabled={status === 'pending' || status === 'approved'}
         >
-          <SelectItem value="" text={`Select a ${approverFieldLabel.toLowerCase()}`} />
+          <SelectItem
+            value=""
+            text={`Select ${/^[aeiou]/i.test(approverFieldLabel) ? 'an' : 'a'} ${approverFieldLabel.toLowerCase()}`}
+          />
           {approvers.map((name) => (
             <SelectItem key={name} value={name} text={name} />
           ))}

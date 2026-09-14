@@ -3,6 +3,7 @@ import FormDemo from './FormDemo';
 import ChatbotDemo from './ChatbotDemo';
 import DashboardDemo from './DashboardDemo';
 import HealthcareDemo from './HealthcareDemo';
+import SocialServicesDemo from './SocialServicesDemo';
 import './App.scss';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
               <Tab>Chatbot</Tab>
               <Tab>Dashboard</Tab>
               <Tab>Healthcare</Tab>
+              <Tab>Social services</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
@@ -34,6 +36,9 @@ function App() {
               </TabPanel>
               <TabPanel>
                 <HealthcareDemo />
+              </TabPanel>
+              <TabPanel>
+                <SocialServicesDemo />
               </TabPanel>
             </TabPanels>
           </Tabs>
