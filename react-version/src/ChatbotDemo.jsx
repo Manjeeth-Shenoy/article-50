@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import { Button, Select, SelectItem, Tag } from '@carbon/react';
-import { Locked, Unlocked } from '@carbon/icons-react';
+import Button from './brandsync/Button';
+import Select from './brandsync/Select';
+import Tag from './brandsync/Tag';
+import { LockIcon, UnlockIcon } from './brandsync/icons';
 import { APPROVERS, makeAILabel } from './aiLabel';
 import ApprovalGate from './ApprovalGate';
 
 function LevelTag({ level, title, requirement }) {
   return (
     <div className="chat-level-tag">
-      <Tag type="high-contrast">{level}</Tag>
+      <Tag type="primary">{level}</Tag>
       <div>
         <p className="chat-level-title">{title}</p>
         <p className="chat-level-requirement">{requirement}</p>
@@ -80,12 +82,11 @@ function O2Scenario() {
         {isEdited ? edited : original} {aiLabel}
       </ChatRow>
       <div className="chat-controls">
-        <Tag type={isEdited ? 'purple' : 'blue'}>
+        <Tag type={isEdited ? 'primary' : 'info'}>
           {isEdited ? 'Human-edited' : 'AI-generated'}
         </Tag>
         <Button
-          kind="tertiary"
-          size="sm"
+          variant="outlined"
           onClick={() => setIsEdited(true)}
           disabled={isEdited}
         >
@@ -123,10 +124,10 @@ function O3Scenario() {
       </ChatRow>
       {!decision && (
         <div className="chat-controls">
-          <Button kind="primary" size="sm" onClick={() => setDecision('confirmed')}>
+          <Button variant="primary" onClick={() => setDecision('confirmed')}>
             Confirm
           </Button>
-          <Button kind="secondary" size="sm" onClick={() => setDecision('cancelled')}>
+          <Button variant="outlined" onClick={() => setDecision('cancelled')}>
             Cancel
           </Button>
         </div>
@@ -245,30 +246,21 @@ function O5Scenario() {
           labelText="Reviewer 1"
           value={reviewer1}
           onChange={handleReviewer1Change}
-        >
-          <SelectItem value="" text="Select a reviewer" />
-          {APPROVERS.map((name) => (
-            <SelectItem key={name} value={name} text={name} />
-          ))}
-        </Select>
+          options={APPROVERS}
+        />
         <Select
           id="chat-o5-reviewer2"
           labelText="Reviewer 2"
           value={reviewer2}
           onChange={handleReviewer2Change}
-        >
-          <SelectItem value="" text="Select a reviewer" />
-          {APPROVERS.map((name) => (
-            <SelectItem key={name} value={name} text={name} />
-          ))}
-        </Select>
+          options={APPROVERS}
+        />
         <Button
-          kind="primary"
-          size="sm"
+          variant="primary"
           disabled={!distinctReviewers || unlocked}
           onClick={handleUnlock}
-          renderIcon={distinctReviewers ? Unlocked : Locked}
         >
+          {distinctReviewers ? <UnlockIcon /> : <LockIcon />}
           {unlocked ? 'Unlocked' : 'Unlock action'}
         </Button>
       </div>

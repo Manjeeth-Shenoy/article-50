@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Select, SelectItem, Button } from '@carbon/react';
+import Select from './brandsync/Select';
+import Button from './brandsync/Button';
 
 function defaultPending(name) {
   return <p className="oversight-result">Waiting for {name} to approve.</p>;
@@ -59,26 +60,19 @@ function ApprovalGate({
           value={approver}
           onChange={handleApproverChange}
           disabled={status === 'pending' || status === 'approved'}
-        >
-          <SelectItem
-            value=""
-            text={`Select ${/^[aeiou]/i.test(approverFieldLabel) ? 'an' : 'a'} ${approverFieldLabel.toLowerCase()}`}
-          />
-          {approvers.map((name) => (
-            <SelectItem key={name} value={name} text={name} />
-          ))}
-        </Select>
+          options={approvers}
+        />
         {status === 'idle' && (
-          <Button kind="primary" size="sm" disabled={!approver} onClick={handleRequest}>
+          <Button variant="primary" disabled={!approver} onClick={handleRequest}>
             {requestLabel}
           </Button>
         )}
         {status === 'pending' && (
           <>
-            <Button kind="primary" size="sm" onClick={handleApprove}>
+            <Button variant="primary" onClick={handleApprove}>
               Approve as {approver}
             </Button>
-            <Button kind="secondary" size="sm" onClick={handleDeny}>
+            <Button variant="outlined" onClick={handleDeny}>
               Deny
             </Button>
           </>

@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import { Tile, Button, Select, SelectItem, Tag } from '@carbon/react';
-import { Locked, Unlocked } from '@carbon/icons-react';
+import Card from './brandsync/Card';
+import Button from './brandsync/Button';
+import Select from './brandsync/Select';
+import Tag from './brandsync/Tag';
+import { LockIcon, UnlockIcon } from './brandsync/icons';
 import { APPROVERS, makeAILabel } from './aiLabel';
 import ApprovalGate from './ApprovalGate';
 
 function LevelTag({ level, title, requirement }) {
   return (
     <div className="chat-level-tag">
-      <Tag type="high-contrast">{level}</Tag>
+      <Tag type="primary">{level}</Tag>
       <div>
         <p className="chat-level-title">{title}</p>
         <p className="chat-level-requirement">{requirement}</p>
@@ -20,8 +23,6 @@ function O1CaseNoteSummary() {
   const aiLabel = makeAILabel({
     heading: 'Note generated',
     body: 'Drafted from the caseworker’s dictated visit notes for the case file. Not a decision or recommendation — shown for reference only.',
-    kind: 'inline',
-    size: 'xs',
   });
 
   return (
@@ -31,7 +32,7 @@ function O1CaseNoteSummary() {
         title="Case note summary"
         requirement="Ship requirement: disclosure only, no confirmation gate."
       />
-      <Tile className="anomaly-tile">
+      <Card className="anomaly-tile">
         <div className="anomaly-tile-header">
           <p className="anomaly-metric">Case: Family Jensen &mdash; home visit follow-up</p>
           {aiLabel}
@@ -40,7 +41,7 @@ function O1CaseNoteSummary() {
           Home conditions appeared stable. Both children were present and
           engaged during the visit. No new concerns raised by the family.
         </p>
-      </Tile>
+      </Card>
     </section>
   );
 }
@@ -51,8 +52,6 @@ function O2ActionPlanWording() {
   const aiLabel = makeAILabel({
     heading: 'Wording generated',
     body: 'Drafted from the goals discussed in the last case review. The caseworker can dismiss it if it doesn’t reflect the citizen’s own words.',
-    kind: 'inline',
-    size: 'xs',
     revertActive: dismissed,
     onRevertClick: () => setDismissed(false),
   });
@@ -64,7 +63,7 @@ function O2ActionPlanWording() {
         title="Action plan wording"
         requirement="Ship requirement: disclosure plus a revert-to-AI-content interaction."
       />
-      <Tile className="anomaly-tile">
+      <Card className="anomaly-tile">
         <div className="anomaly-tile-header">
           <p className="anomaly-metric">Citizen: L. Berg &mdash; employment support plan</p>
           {aiLabel}
@@ -75,19 +74,18 @@ function O2ActionPlanWording() {
             : '"Goal: complete a work-readiness course within 8 weeks, with weekly check-ins to track progress."'}
         </p>
         <div className="anomaly-controls">
-          <Tag type={dismissed ? 'gray' : 'blue'}>
+          <Tag type={dismissed ? 'neutral' : 'info'}>
             {dismissed ? 'Blank, pending caseworker' : 'AI-suggested'}
           </Tag>
           <Button
-            kind="tertiary"
-            size="sm"
+            variant="outlined"
             onClick={() => setDismissed(true)}
             disabled={dismissed}
           >
             Dismiss AI wording
           </Button>
         </div>
-      </Tile>
+      </Card>
     </section>
   );
 }
@@ -98,8 +96,6 @@ function O3RiskAssessmentDraft() {
   const aiLabel = makeAILabel({
     heading: 'Risk assessment drafted',
     body: 'Drafted from recent case notes and the citizen’s housing history. Nothing is added to the case file until confirmed.',
-    kind: 'inline',
-    size: 'xs',
   });
 
   return (
@@ -109,7 +105,7 @@ function O3RiskAssessmentDraft() {
         title="Housing instability risk note"
         requirement="Ship requirement: explicit Confirm or Cancel before the action takes effect."
       />
-      <Tile className="anomaly-tile">
+      <Card className="anomaly-tile">
         <div className="anomaly-tile-header">
           <p className="anomaly-metric">Citizen: A. Madsen &mdash; housing risk assessment</p>
           {aiLabel}
@@ -120,10 +116,10 @@ function O3RiskAssessmentDraft() {
         </p>
         {!decision && (
           <div className="anomaly-controls">
-            <Button kind="primary" size="sm" onClick={() => setDecision('confirmed')}>
+            <Button variant="primary" onClick={() => setDecision('confirmed')}>
               Confirm
             </Button>
-            <Button kind="secondary" size="sm" onClick={() => setDecision('cancelled')}>
+            <Button variant="outlined" onClick={() => setDecision('cancelled')}>
               Cancel
             </Button>
           </div>
@@ -135,7 +131,7 @@ function O3RiskAssessmentDraft() {
               : 'Draft discarded. Case file unchanged.'}
           </p>
         )}
-      </Tile>
+      </Card>
     </section>
   );
 }
@@ -144,8 +140,6 @@ function O4MedicationDispensingChange() {
   const aiLabel = makeAILabel({
     heading: 'Dispensing change recommended',
     body: 'Recommended based on the resident’s updated care plan. Selecting a named caseworker only requests their sign-off — the schedule is not changed until they actually approve it.',
-    kind: 'inline',
-    size: 'xs',
   });
 
   return (
@@ -155,7 +149,7 @@ function O4MedicationDispensingChange() {
         title="Medication dispensing change"
         requirement="Ship requirement: the named approver must explicitly approve — selecting their name alone does not release the change."
       />
-      <Tile className="anomaly-tile">
+      <Card className="anomaly-tile">
         <div className="anomaly-tile-header">
           <p className="anomaly-metric">Resident: T. Holm &mdash; daily medication schedule</p>
           {aiLabel}
@@ -185,7 +179,7 @@ function O4MedicationDispensingChange() {
             </p>
           )}
         />
-      </Tile>
+      </Card>
     </section>
   );
 }
@@ -228,8 +222,6 @@ function O5ChildProtectionEscalation() {
   const aiLabel = makeAILabel({
     heading: 'Elevated risk pattern flagged',
     body: 'Flagged because recent case notes match a pattern associated with elevated child-safety risk. Requires two different named caseworkers before this is escalated to child protection.',
-    kind: 'inline',
-    size: 'xs',
   });
 
   return (
@@ -239,7 +231,7 @@ function O5ChildProtectionEscalation() {
         title="Child-protection risk escalation"
         requirement="Ship requirement: two different named reviewers required to unlock, with each approval logged to a visible audit trail."
       />
-      <Tile className="anomaly-tile">
+      <Card className="anomaly-tile">
         <div className="anomaly-tile-header">
           <p className="anomaly-metric">Case: Family Nissen &mdash; minor in household</p>
           {aiLabel}
@@ -254,30 +246,21 @@ function O5ChildProtectionEscalation() {
             labelText="Caseworker 1"
             value={reviewer1}
             onChange={handleReviewer1Change}
-          >
-            <SelectItem value="" text="Select a caseworker" />
-            {APPROVERS.map((name) => (
-              <SelectItem key={name} value={name} text={name} />
-            ))}
-          </Select>
+            options={APPROVERS}
+          />
           <Select
             id="social-o5-reviewer2"
             labelText="Caseworker 2"
             value={reviewer2}
             onChange={handleReviewer2Change}
-          >
-            <SelectItem value="" text="Select a caseworker" />
-            {APPROVERS.map((name) => (
-              <SelectItem key={name} value={name} text={name} />
-            ))}
-          </Select>
+            options={APPROVERS}
+          />
           <Button
-            kind="primary"
-            size="sm"
+            variant="primary"
             disabled={!distinctReviewers || unlocked}
             onClick={handleUnlock}
-            renderIcon={distinctReviewers ? Unlocked : Locked}
           >
+            {distinctReviewers ? <UnlockIcon /> : <LockIcon />}
             {unlocked ? 'Unlocked' : 'Unlock action'}
           </Button>
         </div>
@@ -291,24 +274,24 @@ function O5ChildProtectionEscalation() {
             Case escalated to the child protection team.
           </p>
         )}
-        <div className="audit-trail">
-          <h4>Audit trail</h4>
-          {auditLog.length === 0 ? (
-            <p className="audit-empty">No approvals logged yet.</p>
-          ) : (
-            <ul>
-              {auditLog.map((entry, i) => (
-                <li key={i}>
-                  <span className="audit-timestamp">{entry.timestamp}</span>
-                  <span>
-                    {entry.label}: {entry.name}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </Tile>
+      </Card>
+      <div className="audit-trail">
+        <h4>Audit trail</h4>
+        {auditLog.length === 0 ? (
+          <p className="audit-empty">No approvals logged yet.</p>
+        ) : (
+          <ul>
+            {auditLog.map((entry, i) => (
+              <li key={i}>
+                <span className="audit-timestamp">{entry.timestamp}</span>
+                <span>
+                  {entry.label}: {entry.name}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </section>
   );
 }

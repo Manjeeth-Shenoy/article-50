@@ -1,6 +1,9 @@
 import { useState } from 'react';
-import { TextArea, TextInput, Button, Select, SelectItem, Tag } from '@carbon/react';
-import { Locked, Unlocked } from '@carbon/icons-react';
+import TextField from './brandsync/TextField';
+import Button from './brandsync/Button';
+import Select from './brandsync/Select';
+import Tag from './brandsync/Tag';
+import { LockIcon, UnlockIcon } from './brandsync/icons';
 import { APPROVERS, makeAILabel } from './aiLabel';
 import ApprovalGate from './ApprovalGate';
 
@@ -8,7 +11,7 @@ function OversightSection({ level, title, requirement, children }) {
   return (
     <section className="oversight-section">
       <div className="oversight-header">
-        <Tag type="high-contrast">{level}</Tag>
+        <Tag type="primary">{level}</Tag>
         <h2>{title}</h2>
       </div>
       <p className="oversight-requirement">{requirement}</p>
@@ -29,10 +32,11 @@ function O1Disclosure() {
       title="AI-generated summary"
       requirement="Ship requirement: disclosure only, no confirmation gate."
     >
-      <TextArea
+      <TextField
         labelText="Ticket summary"
         value="Customer reports intermittent login failures on the mobile app since the last release. Root cause appears to be a token refresh race condition."
         readOnly
+        multiline
         rows={3}
         decorator={aiLabel}
       />
@@ -42,21 +46,11 @@ function O1Disclosure() {
 
 function O2RevertToggle() {
   const [isEdited, setIsEdited] = useState(false);
-  const [text, setText] = useState(
-    'Bonjour, merci de nous avoir contactés. Nous traitons votre demande dès que possible.'
-  );
   const original = 'Bonjour, merci de nous avoir contactés. Nous traitons votre demande dès que possible.';
   const edited = 'Bonjour ! Merci de votre message — nous revenons vers vous très vite avec une solution.';
 
-  const handleRevert = () => {
-    setText(original);
-    setIsEdited(false);
-  };
-
-  const handleSimulateEdit = () => {
-    setText(edited);
-    setIsEdited(true);
-  };
+  const handleRevert = () => setIsEdited(false);
+  const handleSimulateEdit = () => setIsEdited(true);
 
   const aiLabel = makeAILabel({
     heading: 'Translation generated',
@@ -71,18 +65,19 @@ function O2RevertToggle() {
       title="AI-translated text field"
       requirement="Ship requirement: disclosure plus a revert-to-AI-content interaction."
     >
-      <TextArea
+      <TextField
         labelText="Translated reply"
-        value={text}
+        value={isEdited ? edited : original}
         readOnly
+        multiline
         rows={3}
         decorator={aiLabel}
       />
       <div className="oversight-controls">
-        <Tag type={isEdited ? 'purple' : 'blue'}>
+        <Tag type={isEdited ? 'primary' : 'info'}>
           {isEdited ? 'Human-edited' : 'AI-generated'}
         </Tag>
-        <Button kind="tertiary" size="sm" onClick={handleSimulateEdit} disabled={isEdited}>
+        <Button variant="outlined" onClick={handleSimulateEdit} disabled={isEdited}>
           Simulate human edit
         </Button>
       </div>
@@ -104,18 +99,19 @@ function O3ConfirmCancel() {
       title="AI-drafted reply"
       requirement="Ship requirement: explicit Confirm or Cancel before the action takes effect."
     >
-      <TextArea
+      <TextField
         labelText="Draft reply"
         value="Thanks for flagging this — I've escalated your ticket to our mobile team and you should see a fix within 48 hours."
         readOnly
+        multiline
         rows={3}
         decorator={aiLabel}
       />
       <div className="oversight-controls">
-        <Button kind="primary" size="sm" onClick={() => setDecision('confirmed')}>
+        <Button variant="primary" onClick={() => setDecision('confirmed')}>
           Confirm
         </Button>
-        <Button kind="secondary" size="sm" onClick={() => setDecision('cancelled')}>
+        <Button variant="outlined" onClick={() => setDecision('cancelled')}>
           Cancel
         </Button>
       </div>
@@ -142,7 +138,7 @@ function O4NamedApprover() {
       title="AI-recommended refund"
       requirement="Ship requirement: the named approver must explicitly approve — selecting their name alone does not release the action."
     >
-      <TextInput
+      <TextField
         labelText="Recommended action"
         value="Issue full refund of $84.00 for order #48213"
         readOnly
@@ -215,7 +211,7 @@ function O5DualReviewer() {
       title="AI-flagged system access change"
       requirement="Ship requirement: two different named reviewers required to unlock, with each approval logged to a visible audit trail."
     >
-      <TextInput
+      <TextField
         labelText="Flagged action"
         value="Grant admin-level access to service account svc-billing-sync"
         readOnly
@@ -227,30 +223,21 @@ function O5DualReviewer() {
           labelText="Reviewer 1"
           value={reviewer1}
           onChange={handleReviewer1Change}
-        >
-          <SelectItem value="" text="Select a reviewer" />
-          {APPROVERS.map((name) => (
-            <SelectItem key={name} value={name} text={name} />
-          ))}
-        </Select>
+          options={APPROVERS}
+        />
         <Select
           id="o5-reviewer2"
           labelText="Reviewer 2"
           value={reviewer2}
           onChange={handleReviewer2Change}
-        >
-          <SelectItem value="" text="Select a reviewer" />
-          {APPROVERS.map((name) => (
-            <SelectItem key={name} value={name} text={name} />
-          ))}
-        </Select>
+          options={APPROVERS}
+        />
         <Button
-          kind="primary"
-          size="sm"
+          variant="primary"
           disabled={!distinctReviewers || unlocked}
           onClick={handleUnlock}
-          renderIcon={distinctReviewers ? Unlocked : Locked}
         >
+          {distinctReviewers ? <UnlockIcon /> : <LockIcon />}
           {unlocked ? 'Unlocked' : 'Unlock action'}
         </Button>
       </div>
