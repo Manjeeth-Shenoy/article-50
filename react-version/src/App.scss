@@ -1,0 +1,129 @@
+@use '@carbon/react';
+
+.app-content {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+.app-title {
+  margin-bottom: 0.5rem;
+}
+
+.app-subtitle {
+  margin-bottom: 2rem;
+  color: var(--cds-text-secondary, #525252);
+
+  code {
+    background: var(--cds-layer-01, #f4f4f4);
+    padding: 0.05rem 0.35rem;
+    border-radius: 2px;
+  }
+}
+
+.oversight-section {
+  border: 1px solid var(--cds-border-subtle, #e0e0e0);
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: var(--cds-layer-01, #f4f4f4);
+}
+
+.oversight-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+
+  h2 {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+}
+
+.oversight-requirement {
+  color: var(--cds-text-secondary, #525252);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.oversight-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.oversight-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.oversight-result {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+
+  &.confirmed {
+    color: var(--cds-support-success, #24a148);
+  }
+
+  &.cancelled {
+    color: var(--cds-support-error, #da1e28);
+  }
+}
+
+.audit-trail {
+  border-top: 1px solid var(--cds-border-subtle, #e0e0e0);
+  padding-top: 1rem;
+
+  h4 {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  li {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+
+.audit-timestamp {
+  font-family: var(--cds-code-01-font-family, monospace);
+  color: var(--cds-text-secondary, #525252);
+  min-width: 5.5rem;
+}
+
+.audit-empty {
+  font-size: 0.85rem;
+  color: var(--cds-text-secondary, #525252);
+  margin: 0;
+}
+
+.ai-label-container {
+  .ai-label-secondary {
+    color: var(--cds-text-secondary, #525252);
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .ai-label-heading {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .ai-label-body {
+    font-size: 0.85rem;
+  }
+}
