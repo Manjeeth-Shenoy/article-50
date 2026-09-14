@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { TextArea, TextInput, Button, Select, SelectItem, Tag } from '@carbon/react';
 import { Locked, Unlocked } from '@carbon/icons-react';
 import { APPROVERS, makeAILabel } from './aiLabel';
+import ApprovalGate from './ApprovalGate';
 
 function OversightSection({ level, title, requirement, children }) {
   return (
@@ -130,19 +131,16 @@ function O3ConfirmCancel() {
 }
 
 function O4NamedApprover() {
-  const [approver, setApprover] = useState('');
-  const [confirmed, setConfirmed] = useState(false);
-
   const aiLabel = makeAILabel({
     heading: 'Refund recommended',
-    body: 'Recommended based on the order history and stated reason. Requires sign-off from a named approver before it can be issued.',
+    body: 'Recommended based on the order history and stated reason. Selecting a named approver only requests their sign-off — the refund is not issued until they actually approve it.',
   });
 
   return (
     <OversightSection
       level="O4"
       title="AI-recommended refund"
-      requirement="Ship requirement: confirm action stays disabled until a specific named approver is selected."
+      requirement="Ship requirement: the named approver must explicitly approve — selecting their name alone does not release the action."
     >
       <TextInput
         labelText="Recommended action"
@@ -150,35 +148,23 @@ function O4NamedApprover() {
         readOnly
         decorator={aiLabel}
       />
-      <div className="oversight-controls">
-        <Select
-          id="o4-approver"
-          labelText="Approver"
-          value={approver}
-          onChange={(e) => {
-            setApprover(e.target.value);
-            setConfirmed(false);
-          }}
-        >
-          <SelectItem value="" text="Select an approver" />
-          {APPROVERS.map((name) => (
-            <SelectItem key={name} value={name} text={name} />
-          ))}
-        </Select>
-        <Button
-          kind="primary"
-          size="sm"
-          disabled={!approver}
-          onClick={() => setConfirmed(true)}
-        >
-          Confirm refund
-        </Button>
-      </div>
-      {confirmed && (
-        <p className="oversight-result confirmed">
-          Refund approved by {approver}.
-        </p>
-      )}
+      <ApprovalGate
+        id="o4-approver"
+        approverFieldLabel="Approver"
+        approvers={APPROVERS}
+        requestLabel="Request approval"
+        renderPending={(name) => (
+          <p className="oversight-result">Waiting for {name} to approve the refund.</p>
+        )}
+        renderApproved={(name) => (
+          <p className="oversight-result confirmed">Refund approved by {name}.</p>
+        )}
+        renderDenied={(name) => (
+          <p className="oversight-result cancelled">
+            Refund declined by {name}. Not issued.
+          </p>
+        )}
+      />
     </OversightSection>
   );
 }

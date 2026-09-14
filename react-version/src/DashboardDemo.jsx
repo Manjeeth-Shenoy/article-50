@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Tile, Button, Select, SelectItem, Tag } from '@carbon/react';
 import { ArrowUp, ArrowDown, Locked, Unlocked } from '@carbon/icons-react';
 import { APPROVERS, makeAILabel } from './aiLabel';
+import ApprovalGate from './ApprovalGate';
 
 function LevelTag({ level, title, requirement }) {
   return (
@@ -152,12 +153,9 @@ function O3Anomaly() {
 }
 
 function O4Anomaly() {
-  const [approver, setApprover] = useState('');
-  const [confirmed, setConfirmed] = useState(false);
-
   const aiLabel = makeAILabel({
     heading: 'Fraud risk flagged',
-    body: 'Flagged due to a burst of high-value transactions from a new device and location. Requires sign-off from a named approver before the account is frozen.',
+    body: 'Flagged due to a burst of high-value transactions from a new device and location. Selecting a named approver only requests their sign-off — the account is not frozen until they actually approve it.',
     kind: 'inline',
     size: 'xs',
   });
@@ -167,7 +165,7 @@ function O4Anomaly() {
       <LevelTag
         level="O4"
         title="Suspected fraud on account"
-        requirement="Ship requirement: confirm action stays disabled until a specific named approver is selected."
+        requirement="Ship requirement: the named approver must explicitly approve — selecting their name alone does not release the action."
       />
       <Tile className="anomaly-tile">
         <div className="anomaly-tile-header">
@@ -177,32 +175,23 @@ function O4Anomaly() {
         <p className="anomaly-value">7 transactions in 4 minutes</p>
         <Trend direction="up" value="$6,400 total, new device" />
         <p className="anomaly-note">Recommended action: freeze this account.</p>
-        <div className="anomaly-controls">
-          <Select
-            id="dash-o4-approver"
-            labelText="Approver"
-            value={approver}
-            onChange={(e) => setApprover(e.target.value)}
-          >
-            <SelectItem value="" text="Select an approver" />
-            {APPROVERS.map((name) => (
-              <SelectItem key={name} value={name} text={name} />
-            ))}
-          </Select>
-          <Button
-            kind="primary"
-            size="sm"
-            disabled={!approver || confirmed}
-            onClick={() => setConfirmed(true)}
-          >
-            Freeze account
-          </Button>
-        </div>
-        {confirmed && (
-          <p className="oversight-result confirmed">
-            Account frozen by {approver}.
-          </p>
-        )}
+        <ApprovalGate
+          id="dash-o4-approver"
+          approverFieldLabel="Approver"
+          approvers={APPROVERS}
+          requestLabel="Request approval"
+          renderPending={(name) => (
+            <p className="oversight-result">Waiting for {name} to approve the freeze.</p>
+          )}
+          renderApproved={(name) => (
+            <p className="oversight-result confirmed">Account frozen by {name}.</p>
+          )}
+          renderDenied={(name) => (
+            <p className="oversight-result cancelled">
+              Freeze declined by {name}. Account not frozen.
+            </p>
+          )}
+        />
       </Tile>
     </section>
   );

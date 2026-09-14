@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Select, SelectItem, Tag } from '@carbon/react';
 import { Locked, Unlocked } from '@carbon/icons-react';
 import { APPROVERS, makeAILabel } from './aiLabel';
+import ApprovalGate from './ApprovalGate';
 
 function LevelTag({ level, title, requirement }) {
   return (
@@ -142,12 +143,9 @@ function O3Scenario() {
 }
 
 function O4Scenario() {
-  const [approver, setApprover] = useState('');
-  const [confirmed, setConfirmed] = useState(false);
-
   const aiLabel = makeAILabel({
     heading: 'Refund recommended',
-    body: 'Recommended based on the order history and stated reason. Requires sign-off from a named approver before it can be issued.',
+    body: 'Recommended based on the order history and stated reason. Selecting a named approver only requests their sign-off — the refund is not issued until they actually approve it.',
     kind: 'inline',
     size: 'xs',
   });
@@ -157,7 +155,7 @@ function O4Scenario() {
       <LevelTag
         level="O4"
         title="Recommended refund"
-        requirement="Ship requirement: confirm action stays disabled until a specific named approver is selected."
+        requirement="Ship requirement: the named approver must explicitly approve — selecting their name alone does not release the action."
       />
       <ChatRow from="customer">
         This customer wants a refund for order #48213, can you handle it?
@@ -165,32 +163,21 @@ function O4Scenario() {
       <ChatRow from="ai">
         I recommend issuing a full refund of $84.00 for order #48213. {aiLabel}
       </ChatRow>
-      {!confirmed && (
-        <div className="chat-controls">
-          <Select
-            id="chat-o4-approver"
-            labelText="Approver"
-            value={approver}
-            onChange={(e) => setApprover(e.target.value)}
-          >
-            <SelectItem value="" text="Select an approver" />
-            {APPROVERS.map((name) => (
-              <SelectItem key={name} value={name} text={name} />
-            ))}
-          </Select>
-          <Button
-            kind="primary"
-            size="sm"
-            disabled={!approver}
-            onClick={() => setConfirmed(true)}
-          >
-            Confirm refund
-          </Button>
-        </div>
-      )}
-      {confirmed && (
-        <ChatRow from="system">Refund approved by {approver}.</ChatRow>
-      )}
+      <ApprovalGate
+        id="chat-o4-approver"
+        approverFieldLabel="Approver"
+        approvers={APPROVERS}
+        requestLabel="Request approval"
+        renderPending={(name) => (
+          <ChatRow from="system">Waiting for {name} to approve the refund.</ChatRow>
+        )}
+        renderApproved={(name) => (
+          <ChatRow from="system">Refund approved by {name}.</ChatRow>
+        )}
+        renderDenied={(name) => (
+          <ChatRow from="system">Refund declined by {name}. Not issued.</ChatRow>
+        )}
+      />
     </section>
   );
 }

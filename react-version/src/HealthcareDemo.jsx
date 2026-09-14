@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Tile, Button, Select, SelectItem, Tag } from '@carbon/react';
 import { Locked, Unlocked } from '@carbon/icons-react';
 import { APPROVERS, makeAILabel } from './aiLabel';
+import ApprovalGate from './ApprovalGate';
 
 function LevelTag({ level, title, requirement }) {
   return (
@@ -140,12 +141,9 @@ function O3RefillRequest() {
 }
 
 function O4DosageChange() {
-  const [approver, setApprover] = useState('');
-  const [confirmed, setConfirmed] = useState(false);
-
   const aiLabel = makeAILabel({
     heading: 'Dosage change recommended',
-    body: 'Recommended based on the patient’s latest renal function panel. Requires sign-off from a named prescribing clinician before it can be ordered.',
+    body: 'Recommended based on the patient’s latest renal function panel. Selecting a named prescribing clinician only requests their sign-off — nothing is ordered until they actually approve it.',
     kind: 'inline',
     size: 'xs',
   });
@@ -155,7 +153,7 @@ function O4DosageChange() {
       <LevelTag
         level="O4"
         title="Recommended dosage change"
-        requirement="Ship requirement: confirm action stays disabled until a specific named approver is selected."
+        requirement="Ship requirement: the named clinician must explicitly approve — selecting their name alone does not release the order."
       />
       <Tile className="anomaly-tile">
         <div className="anomaly-tile-header">
@@ -166,32 +164,27 @@ function O4DosageChange() {
           Recommended action: reduce dose from 1000mg to 500mg twice daily given
           declining eGFR.
         </p>
-        <div className="anomaly-controls">
-          <Select
-            id="health-o4-approver"
-            labelText="Prescribing clinician"
-            value={approver}
-            onChange={(e) => setApprover(e.target.value)}
-          >
-            <SelectItem value="" text="Select a clinician" />
-            {APPROVERS.map((name) => (
-              <SelectItem key={name} value={name} text={name} />
-            ))}
-          </Select>
-          <Button
-            kind="primary"
-            size="sm"
-            disabled={!approver || confirmed}
-            onClick={() => setConfirmed(true)}
-          >
-            Order dosage change
-          </Button>
-        </div>
-        {confirmed && (
-          <p className="oversight-result confirmed">
-            Dosage change ordered by {approver}.
-          </p>
-        )}
+        <ApprovalGate
+          id="health-o4-approver"
+          approverFieldLabel="Prescribing clinician"
+          approvers={APPROVERS}
+          requestLabel="Request approval"
+          renderPending={(name) => (
+            <p className="oversight-result">
+              Waiting for {name} to approve the dosage change.
+            </p>
+          )}
+          renderApproved={(name) => (
+            <p className="oversight-result confirmed">
+              Dosage change ordered by {name}.
+            </p>
+          )}
+          renderDenied={(name) => (
+            <p className="oversight-result cancelled">
+              Dosage change declined by {name}. Order not placed.
+            </p>
+          )}
+        />
       </Tile>
     </section>
   );
