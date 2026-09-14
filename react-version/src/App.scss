@@ -222,3 +222,71 @@
   flex-wrap: wrap;
   margin-left: 2.75rem;
 }
+
+.dashboard-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 40rem;
+}
+
+.anomaly-scenario {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.anomaly-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.anomaly-tile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.anomaly-metric {
+  color: var(--cds-text-secondary, #525252);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.anomaly-value {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.anomaly-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.anomaly-trend--up {
+  color: var(--cds-support-error, #da1e28);
+}
+
+.anomaly-trend--down {
+  color: var(--cds-support-success, #24a148);
+}
+
+.anomaly-note {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.anomaly-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}

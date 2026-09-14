@@ -1,6 +1,7 @@
 import { Content, Grid, Column, Tabs, TabList, Tab, TabPanels, TabPanel } from '@carbon/react';
 import FormDemo from './FormDemo';
 import ChatbotDemo from './ChatbotDemo';
+import DashboardDemo from './DashboardDemo';
 import './App.scss';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <TabList aria-label="Demo views">
               <Tab>Form fields</Tab>
               <Tab>Chatbot</Tab>
+              <Tab>Dashboard</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
@@ -24,6 +26,9 @@ function App() {
               </TabPanel>
               <TabPanel>
                 <ChatbotDemo />
+              </TabPanel>
+              <TabPanel>
+                <DashboardDemo />
               </TabPanel>
             </TabPanels>
           </Tabs>
